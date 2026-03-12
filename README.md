@@ -15,7 +15,7 @@ $ pip install -r requirements.txt
 
 
 ### Run GAIL with PPO 
-$ python -m learning.AIRL.main
+$ python -m GAIL.main
 
 
 
@@ -41,7 +41,7 @@ https://gitlab.sdu.dk/sdurobotics/teaching/mj_sim
 https://github.com/reinforcement-learning-kr/lets-do-irl
 
 
-- GAIL implementation[
+- GAIL implementation
 https://github.com/reinforcement-learning-kr/lets-do-irl
 
 

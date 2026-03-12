@@ -1,0 +1,68 @@
+ --------------------- Arguments ---------------------
+render: False
+gamma: 0.99
+lamda: 0.85
+hidden_size: 256
+learning_rate: 0.0002
+l2_rate: 1e-06
+entropy_gain_PPO: 0
+critic_gain_PPO: 1
+clip_param_actor: 0.2
+clip_param_critic: 10
+discrim_update_num: 5
+actor_critic_update_num: 30
+total_sample_size: 100
+batch_size: 3500
+suspend_accu_exp: 0.8
+suspend_accu_gen: 0.8
+max_iter_num: 80
+seed: 899105
+logdir: logs
+max_grad_norm: 10
+hidden_layer_nodes_r: (256, 256)
+hidden_layer_nodes_v: (256, 256)
+irl_learning_rate: 0.0001
+airl_epochs: 5
+AIRL_L2_weight_decay: 1e-06
+discriminator_delay_value: 40
+model_path: learning/AIRL/Saved_models/AIRL_FLICK_3_TASK_25-09-11_02-08-54
+model_candidate: latest
+disc_model_path: learning/AIRL/Saved_models/AIRL_FLICK_3_TASK_25-09-11_02-08-54
+disc_model_candidate: latest
+discrim_type: GAIL
+expert_address: learning/AIRL/expert_demo/gello_demonstrations/C1_expert_data_gello_500/expert_memory.pkl
+train_RL: True
+train_IRL: False
+render_mode: rgb_array
+task_device: cpu
+expert_data_size: 35000
+use_IRL_reward: True
+record_reward_data: False
+airl_epocs: 5
+env_render_mode: rgb_array
+
+
+ --------------------- Environment arguments ---------------------
+
+scene_path: learning/scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml
+domain_randomization_list: []
+load_model: 
+expert_demonstration: False
+agent_disabled: False
+plot_data: False
+save_state_actions: False
+show_site_frames: False
+gravity_comp: True
+manual: False
+render_size: 0.1
+eval_episodes: 1
+seed_eval: 110
+render: False
+episode_timeout: 200
+expl_noise: 0.1
+seed_train: 100
+t: 0
+batch_size: 20
+exit_on_done: True
+state0: default
+training_name: 
