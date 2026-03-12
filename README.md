@@ -14,6 +14,10 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 
 
+### Unzip the expert demonstrations
+The expert demonstration zip map is in "GAIL/expert_demo". Extract the zip file into the same path "GAIL/expert_demo", to enable GAIL training with expert demonstrations.
+
+
 ### Run GAIL with PPO 
 $ python -m GAIL.main
 
