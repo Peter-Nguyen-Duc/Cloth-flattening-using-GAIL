@@ -444,7 +444,7 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
     ]
 
     if save_path == "":
-        path = os.path.abspath("learning/GAIL/Saved_models/")
+        path = os.path.abspath("GAIL/Saved_models/")
     else:
         path = save_path + "/Saved_models/"
 
@@ -456,7 +456,7 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
     if args.train_RL == True or args.train_IRL == True or args.record_reward_data :
         
         if save_path == "":
-            log_address = "learning/GAIL/logs/" + name
+            log_address = "GAIL/logs/" + name
         else:
             log_address = save_path + "/logs/" + name
 
