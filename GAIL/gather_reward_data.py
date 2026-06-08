@@ -8,7 +8,7 @@ from environments.Cloth_flattening_environment import URSim_SKRL_env
 
 
 def make_args():
-    parser = argparse.ArgumentParser(description='PyTorch GAIL')
+    parser = argparse.ArgumentParser(description='PyTorch AIRL')
     parser.add_argument('--render', action="store_true", default=False, 
                         help='if you dont want to render, set this to False')
     parser.add_argument('--gamma', type=float, default=0.70, 
@@ -75,7 +75,7 @@ def make_args():
                         help='Weight decay for the reward network of AIRL')
     parser.add_argument('--train_RL', type=bool, default=True,
                         help='enable or disable train with RL for debugging')
-    parser.add_argument('--train_IRL', type=bool, default=True,
+    parser.add_argument('--training_IRL', type=bool, default=True,
                         help='enable or disable train with IRL for debugging')
     parser.add_argument('--render_mode', type=str, default="rgb_array",
                         help='enable or disable train with IRL for debugging')
@@ -89,6 +89,7 @@ def make_args():
                         help='This boolean decides whether to use the reward from AIRL or the environment reward for the PPO training')
 
 
+
     args = parser.parse_args()
 
     return args
@@ -98,14 +99,8 @@ def main():
     # hmm, https://github.com/HumanCompatibleAI/imitation/tree/master
     args = make_args()
     env_args = generate_config_file()
-    env_args.scene_path =  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml"
+    env_args.scene_path = "learning/scenes/c1_mass_randomization/cloth_mass_0_15.xml"
 
-
-    # # uncomment the list of domains to enable domain augmentation
-    # env_args.domain_randomization_list = [  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml",
-    #                                         "scenes/c1_cloth_spacing_randomization/cloth_spacing0_040.xml",
-    #                                         "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml",
-    #                                         "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml"]
 
 
     env_args.episode_timeout = 200
@@ -115,7 +110,7 @@ def main():
     args.gamma = 0.99
     args.lamda = 0.85
     args.actor_critic_update_num = 30
-    args.total_sample_size = 100 # set to 100 when training
+    args.total_sample_size = 1 # set to 100 when training
     args.batch_size = int(350 * args.total_sample_size / 10) # Ensure its int (both nummerically and in datatype)
     args.hidden_size = 256
     args.learning_rate = 2e-4
@@ -141,27 +136,36 @@ def main():
     args.discrim_type = "GAIL" # Set to either "AIRL" or "GAIL" to train with the respective models
 
     # ------- General settings -------
-    args.max_iter_num = 80 # set high when training (i set it to 1000000)
+    args.max_iter_num = 50 # set high when training (i set it to 1000000)
+
+
+    # good 0.4 spacing model: learning/AIRL/Saved_models/AIRL_FLICK_3_TASK_25-11-05_15-05-36
+    # mass randomization domain:
+    # learning/AIRL/Saved_models/AIRL_FLICK_3_TASK_26-01-13_21-27-04
+    # learning/AIRL/Saved_models/AIRL_FLICK_3_TASK_26-01-15_07-21-22
 
 
     # Load RL model
-    args.model_path = "plots_02_06_2026/PPO_policies/baseline_environment_training/300 steps reached/saved_models/GAIL_CLOTH_TASK_26-06-05_13-47-53"
+    args.model_path = "plots_02_06_2026/PPO_policies/cloth_spacing/300_steps/saved_models/GAIL_CLOTH_TASK_26-06-05_13-48-05"
+
     args.model_candidate = "latest"
 
-    # Load IRL model
+    # Load discriminator model
     args.disc_model_path = "GAIL/Saved_models/cloth_flattening_Baseline_25-09-11_02-08-54"
     args.disc_model_candidate = "latest"
 
 
+
+    # current training name: AIRL_FLICK_3_TASK_25-10-21_12-07-36/params.txt
     args.expert_address = "GAIL/expert_demo/gello_demonstrations/C1_expert_data_gello_500/expert_memory.pkl"
 
-    args.train_RL = True
+    args.train_RL = False
     args.train_IRL = False
 
     args.use_IRL_reward = True
 
 
-    args.env_render_mode = "human"  # "human" or "rgb_array" 
+    args.env_render_mode = "rgb_array"  # "human" or "rgb_array" 
 
 
 
@@ -175,15 +179,32 @@ def main():
     env_args.save_state_actions = False
 
     # Set true if recording reward data
-    args.record_reward_data = False
-
-
+    args.record_reward_data = True
 
     args.task_device = "cpu"  # Set to "cuda:0" for GPU or "cpu" for CPU, does not work with GPU at the moment
-    train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=False)
 
-    print("Training completed!")
-    print("current time: ", np.datetime64('now', 's'))
+
+
+    # Train with several domains
+    domain_list = [ 
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_025.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_035.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_040.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_045.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_055.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml",
+        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_065.xml",
+                    ]
+    
+    for envs in domain_list:
+        env_args.scene_path = envs
+        save_path = "learning/GAIL/PPO_300_spacing_augmented_policy_validation"
+        train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=False, save_path=save_path)
+
+        print("Completed data sampling for environment: ", envs)
+        print("current time: ", np.datetime64('now', 's'))
 
 if __name__=="__main__":
 
