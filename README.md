@@ -13,6 +13,12 @@ $ source venv/bin/activate
 ### install requirements
 $ pip install -r requirements.txt
 
+## Note:
+This repo was originally built on ubuntu 22.04 with python 3.10.12.
+
+The new requirements_python_3_12_3.txt supports the use of python 3.12.3, as i upgraded to ubuntu 24.04
+
+
 
 ### Unzip the expert demonstrations
 The expert demonstration zip map is in "GAIL/expert_demo". Extract the zip file into the same path "GAIL/expert_demo", to enable GAIL training with expert demonstrations.
