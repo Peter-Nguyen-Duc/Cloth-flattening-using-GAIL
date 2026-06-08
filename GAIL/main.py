@@ -4,7 +4,7 @@ import numpy as np
 from GAIL.src.IRL import train_IRL 
 
 #Flick task environment
-from environments.UR_env_Flick_TASK_C1 import URSim_SKRL_env
+from environments.Cloth_flattening_environment import URSim_SKRL_env
 
 
 def make_args():

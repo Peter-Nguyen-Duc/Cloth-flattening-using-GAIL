@@ -191,10 +191,10 @@ class URSim_SKRL_env(MujocoEnv):
         self.data_points = 0
 
 
-        path_expert_data = os.path.abspath("GAIL/expert_demo/gello_demonstrations/C1_expert_data_gello_500/expert_memory.pkl")
+        # path_expert_data = os.path.abspath("GAIL/expert_demo/gello_demonstrations/C1_expert_data_gello_500/expert_memory.pkl")
 
-        expert_data_file = open(path_expert_data, "rb")
-        self.expert_memory = pickle.load(expert_data_file)
+        # expert_data_file = open(path_expert_data, "rb")
+        # self.expert_memory = pickle.load(expert_data_file)
         
 
         # DEBUG; This is for getting the observation space size.. 
