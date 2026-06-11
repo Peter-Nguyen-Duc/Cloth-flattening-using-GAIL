@@ -5,6 +5,7 @@ from GAIL.src.IRL import train_IRL
 
 #Flick task environment
 from environments.Cloth_flattening_environment import URSim_SKRL_env
+from diffusion_policy.load_diffusion_model import load_diffusion_model
 
 
 def make_args():
@@ -87,6 +88,10 @@ def make_args():
                         help='This boolean decides whether to use the reward from AIRL or the environment reward for the PPO training')
     parser.add_argument('--record_reward_data', type=bool, default=False,
                         help='This boolean decides whether to use the reward from AIRL or the environment reward for the PPO training')
+    parser.add_argument('--policy', type=str, default="ppo",
+                        help='This argument chooses which policy is used for the environment, normally it is set to PPO, but can be set to [PPO, diffusion]')
+    parser.add_argument('--diffusion_action_horizon', type=int, default=16,
+                        help='This argument chooses which policy is used for the environment, normally it is set to PPO, but can be set to [PPO, diffusion]')
 
 
     args = parser.parse_args()
@@ -98,7 +103,7 @@ def main():
     # hmm, https://github.com/HumanCompatibleAI/imitation/tree/master
     args = make_args()
     env_args = generate_config_file()
-    env_args.scene_path =  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml"
+    env_args.scene_path =  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml"
 
 
     # # uncomment the list of domains to enable domain augmentation
@@ -110,6 +115,13 @@ def main():
 
     env_args.episode_timeout = 200
 
+    # ------- Cloth policy model -------
+    # If diffusion is chosen it is assumed that the model is pretrained.
+    args.policy = "diffusion"
+
+    # ------- Diffusion model settings -------
+    args.diffusion_action_horizon = 16
+    args.diffusion_sampled_actions = 16
 
     # ------- PPO settings -------
     args.gamma = 0.99
@@ -144,8 +156,8 @@ def main():
     args.max_iter_num = 80 # set high when training (i set it to 1000000)
 
 
-    # Load RL model
-    args.model_path = "plots_02_06_2026/PPO_policies/baseline_environment_training/300 steps reached/saved_models/GAIL_CLOTH_TASK_26-06-05_13-47-53"
+    # Load RL modeld
+    args.model_path = "GAIL/Saved_models/cloth_flattening_Baseline_25-09-11_02-08-54"
     args.model_candidate = "latest"
 
     # Load IRL model
@@ -155,7 +167,7 @@ def main():
 
     args.expert_address = "GAIL/expert_demo/gello_demonstrations/C1_expert_data_gello_500/expert_memory.pkl"
 
-    args.train_RL = True
+    args.train_RL = False
     args.train_IRL = False
 
     args.use_IRL_reward = True

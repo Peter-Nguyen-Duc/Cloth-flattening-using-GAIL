@@ -18,3 +18,15 @@ torchviz==0.0.3
 
 tensorboardX==2.6.5
 mujoco_py==2.1.2.14
+
+
+diffusers
+imageio
+numpy
+Pillow
+roboticstoolbox-python
+spatialmath-python
+torch
+torchvision
+tqdm
+wandb

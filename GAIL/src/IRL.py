@@ -33,7 +33,7 @@ torch.set_default_dtype(torch.float32)
 
 import copy
 
-
+from diffusion_policy.load_diffusion_model import load_diffusion_model
 
 def mahalanobis_distance(action, mean, std):
     """
@@ -172,26 +172,60 @@ def run_rollout_loop(actor, episodes_per_mini_batch, memory, env, args, env_args
         state, _ = env.reset()
         steps = 0
 
+        if args.policy == "diffusion":
+            diffusion_action_buffer = []
+            diffusion_observations = []
+
+
         for _ in range(10000): 
 
             steps += 1
 
 
             with torch.no_grad():
-                
-
                 state_tensor = torch.tensor(state, dtype=torch.float32).view(1, -1)
 
-                mu, std = actor(state_tensor)
-            
-                action = get_action(mu, std)[0]
+                # obtain an action using PPO
+                if args.policy == "PPO" or args.policy == "ppo":
+                    
+                    mu, std = actor(state_tensor)
+                
+                    action = get_action(mu, std)[0]
+        
+                    action_tensor = torch.tensor(action, dtype=torch.float32).view(1, -1)
+                    
+                    log_pis = log_prob_density(action_tensor, mu, std).item()
+
+
+                else:
+                    obs_dict = {}
+                    obs_dict["agent_pos"] = state
+                    obs_dict["action"] = None
+
+                    # this is only true at the start of training, the observations must be jumpstarted
+                    if len(diffusion_observations) < args.diffusion_action_horizon:
+                        [diffusion_observations.append(obs_dict) for _ in range(args.diffusion_action_horizon )]
+
+
+                    diffusion_observations.pop(0)
+                    diffusion_observations.append(obs_dict)
+
+
+                    if len(diffusion_action_buffer) == 0:
+                        action = actor.predict_action(diffusion_observations[::-1])
+                        
+                        if args.diffusion_action_horizon != 1:
+                            [diffusion_action_buffer.append(act) for act in action[0: args.diffusion_sampled_actions]]
+                    
+
+                    action = diffusion_action_buffer.pop(0)
+                    action_tensor = torch.tensor(action, dtype=torch.float32).view(1, -1)
+                    
+                    log_pis = None
 
                 # Deploy with expert action
 
 
-                action_tensor = torch.tensor(action, dtype=torch.float32).view(1, -1)
-
-                log_pis = log_prob_density(action_tensor, mu, std).item()
 
 
             next_state, reward, done, _, _ = env.step(action)
@@ -278,13 +312,13 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
         print(f"ERROR: discrim type {args.discrim_type} is not supported for this training environment")
 
 
-    if args.model_path == "":
+    if args.model_path == "" or args.model_path == None:
         use_pretrained_RL  = False
     else:
         use_pretrained_RL = True
 
 
-    if args.disc_model_path == "":
+    if args.disc_model_path == "" or args.disc_model_path == None:
         use_pretrained_IRL  = False
     else:
         use_pretrained_IRL = True
@@ -306,14 +340,17 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
 
     # Initiating Actor and critic
 
+    if args.policy == "PPO" or args.policy == "ppo":
+        actor = copy.deepcopy(Actor(num_inputs, num_actions, args).to(args.task_device))
+        actor_optim = optim.Adam(actor.parameters(), lr=args.learning_rate, weight_decay=args.l2_rate)
 
-    actor = copy.deepcopy(Actor(num_inputs, num_actions, args).to(args.task_device))
-    actor_optim = optim.Adam(actor.parameters(), lr=args.learning_rate, weight_decay=args.l2_rate)
+        critic = copy.deepcopy(Critic(num_inputs, args).to(args.task_device))
+        critic_optim = optim.Adam(critic.parameters(), lr=args.learning_rate, weight_decay=args.l2_rate) 
 
-    critic = copy.deepcopy(Critic(num_inputs, args).to(args.task_device))
-    critic_optim = optim.Adam(critic.parameters(), lr=args.learning_rate, weight_decay=args.l2_rate) 
+    elif args.policy == "diffusion" or args.policy == "diffusion":
 
-
+        actor = load_diffusion_model(input_args=args)
+        critic = None
 
     # Initializing the AIRL discriminator
     if args.discrim_type == "AIRL":
@@ -340,7 +377,7 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
 
 
 
-    if use_pretrained_RL:
+    if use_pretrained_RL and (args.policy == "ppo" or args.policy == "PPO"): 
         actor_state_dict = torch.load(args.model_path + "/" + args.model_candidate + "_actor.pkl")
         actor.load_state_dict(actor_state_dict)
 
@@ -376,13 +413,14 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
             discrim_optim.load_state_dict(discrim_state_dict_GAIL)
 
 
+    if (args.policy == "ppo" or args.policy == "PPO"):
+        for g in actor_optim.param_groups:
+            g['lr'] = args.learning_rate
+            
 
-    for g in actor_optim.param_groups:
-        g['lr'] = args.learning_rate
-        
+        for g in critic_optim.param_groups:
+            g['lr'] = args.learning_rate
 
-    for g in critic_optim.param_groups:
-        g['lr'] = args.learning_rate
 
 
     if args.discrim_type == "AIRL":
@@ -491,8 +529,8 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
     for iter in range(args.max_iter_num):
         memory = deque()
 
-
-        actor.eval(), critic.eval()
+        if (args.policy == "ppo" or args.policy == "PPO"):
+            actor.eval(), critic.eval()
 
 
 
@@ -541,7 +579,7 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
 
 
         # Save the latest models so far
-        if args.train_RL:
+        if args.train_RL and (args.policy == "ppo" or args.policy == "PPO"):
             torch.save(actor.state_dict(), directory+'latest_actor.pkl')
             torch.save(critic.state_dict(), directory+'latest_critic.pkl')
 
@@ -662,7 +700,7 @@ def train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=True, save_path="")
 
 
         # Training the actor and critic
-        if args.train_RL:
+        if args.train_RL and (args.policy == "ppo" or args.policy == "PPO"):
 
             actor.train(), critic.train()
 

@@ -75,8 +75,6 @@ def make_args():
                         help='Weight decay for the reward network of AIRL')
     parser.add_argument('--train_RL', type=bool, default=True,
                         help='enable or disable train with RL for debugging')
-    parser.add_argument('--training_IRL', type=bool, default=True,
-                        help='enable or disable train with IRL for debugging')
     parser.add_argument('--render_mode', type=str, default="rgb_array",
                         help='enable or disable train with IRL for debugging')
     parser.add_argument('--task_device', type=str, default="cuda:0",
@@ -146,7 +144,7 @@ def main():
 
 
     # Load RL model
-    args.model_path = "plots_02_06_2026/PPO_policies/cloth_spacing/300_steps/saved_models/GAIL_CLOTH_TASK_26-06-05_13-48-05"
+    args.model_path = "GAIL/Saved_models/0_03_repeat_training/Saved_models/GAIL_CLOTH_TASK_26-06-10_09-37-48"
 
     args.model_candidate = "latest"
 
@@ -187,20 +185,20 @@ def main():
 
     # Train with several domains
     domain_list = [ 
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_025.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_035.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_040.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_045.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_055.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml",
-        "scenes/c1_cloth_spacing_randomization/cloth_spacing0_065.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_025.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_035.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_040.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_045.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_055.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml",
+                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_065.xml",
                     ]
     
     for envs in domain_list:
         env_args.scene_path = envs
-        save_path = "learning/GAIL/PPO_300_spacing_augmented_policy_validation"
+        save_path = "GAIL/Saved_models/validation_0_03_repeat_training"
         train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=False, save_path=save_path)
 
         print("Completed data sampling for environment: ", envs)
