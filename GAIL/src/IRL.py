@@ -221,7 +221,7 @@ def run_rollout_loop(actor, episodes_per_mini_batch, memory, env, args, env_args
                     action = diffusion_action_buffer.pop(0)
                     action_tensor = torch.tensor(action, dtype=torch.float32).view(1, -1)
                     
-                    log_pis = None
+                    log_pis = 0
 
                 # Deploy with expert action
 
