@@ -85,6 +85,11 @@ def make_args():
                         help='This boolean decides whether to use the reward from AIRL or the environment reward for the PPO training')
     parser.add_argument('--record_reward_data', type=bool, default=False,
                         help='This boolean decides whether to use the reward from AIRL or the environment reward for the PPO training')
+    parser.add_argument('--policy', type=str, default="ppo",
+                        help='This argument chooses which policy is used for the environment, normally it is set to PPO, but can be set to [PPO, diffusion]')
+    parser.add_argument('--diffusion_action_horizon', type=int, default=16,
+                        help='This argument chooses which policy is used for the environment, normally it is set to PPO, but can be set to [PPO, diffusion]')
+
 
 
 
@@ -98,6 +103,15 @@ def main():
     args = make_args()
     env_args = generate_config_file()
     env_args.scene_path = "learning/scenes/c1_mass_randomization/cloth_mass_0_15.xml"
+
+
+    # ------- Cloth policy model -------
+    # If diffusion is chosen it is assumed that the model is pretrained.
+    args.policy = "diffusion"
+
+    # ------- Diffusion model settings -------
+    args.diffusion_action_horizon = 16
+    args.diffusion_sampled_actions = 16
 
 
 
@@ -198,7 +212,7 @@ def main():
     
     for envs in domain_list:
         env_args.scene_path = envs
-        save_path = "GAIL/Saved_models/validation_0_03_repeat_training"
+        save_path = "GAIL/Saved_models/KOS"
         train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=False, save_path=save_path)
 
         print("Completed data sampling for environment: ", envs)
