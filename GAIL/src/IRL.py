@@ -212,7 +212,7 @@ def run_rollout_loop(actor, episodes_per_mini_batch, memory, env, args, env_args
 
 
                     if len(diffusion_action_buffer) == 0:
-                        action = actor.predict_action(diffusion_observations[::-1])
+                        action = actor.predict_action(diffusion_observations)
                         
                         if args.diffusion_action_horizon != 1:
                             [diffusion_action_buffer.append(act) for act in action[0: args.diffusion_sampled_actions]]

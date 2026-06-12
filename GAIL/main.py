@@ -103,7 +103,7 @@ def main():
     # hmm, https://github.com/HumanCompatibleAI/imitation/tree/master
     args = make_args()
     env_args = generate_config_file()
-    env_args.scene_path =  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml"
+    env_args.scene_path =  "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml"
 
 
     # # uncomment the list of domains to enable domain augmentation
