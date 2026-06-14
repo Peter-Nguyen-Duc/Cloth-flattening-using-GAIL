@@ -102,12 +102,12 @@ def main():
     # hmm, https://github.com/HumanCompatibleAI/imitation/tree/master
     args = make_args()
     env_args = generate_config_file()
-    env_args.scene_path = "learning/scenes/c1_mass_randomization/cloth_mass_0_15.xml"
+    env_args.scene_path = "learning/scenes/c1_mass_randomization/cloth_mass_0_05.xml"
 
 
     # ------- Cloth policy model -------
     # If diffusion is chosen it is assumed that the model is pretrained.
-    args.policy = "diffusion"
+    args.policy = "ppo"
 
     # ------- Diffusion model settings -------
     args.diffusion_action_horizon = 16
@@ -158,7 +158,7 @@ def main():
 
 
     # Load RL model
-    args.model_path = "GAIL/Saved_models/0_03_repeat_training/Saved_models/GAIL_CLOTH_TASK_26-06-10_09-37-48"
+    args.model_path = "GAIL/Saved_models/mass_augmented_policies_80_steps/mass_randomization/saved_models/GAIL_CLOTH_TASK_26-06-12_15-52-09"
 
     args.model_candidate = "latest"
 
@@ -199,20 +199,20 @@ def main():
 
     # Train with several domains
     domain_list = [ 
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_025.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_030.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_035.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_040.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_045.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_050.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_055.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_060.xml",
-                    "scenes/c1_cloth_spacing_randomization/cloth_spacing0_065.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_005.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_010.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_030.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_050.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_075.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_100.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_125.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_150.xml",
+                        "scenes/c1_mass_randomization/cloth_mass_0_175.xml",
                     ]
     
     for envs in domain_list:
         env_args.scene_path = envs
-        save_path = "GAIL/Saved_models/KOS"
+        save_path = "GAIL/Saved_models/validation_mass_finetuned_80_steps/mass_randomization"
         train_IRL(args, env_args, URSim_SKRL_env, Train_at_start=False, save_path=save_path)
 
         print("Completed data sampling for environment: ", envs)

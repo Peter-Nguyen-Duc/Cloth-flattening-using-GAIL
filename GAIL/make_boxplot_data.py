@@ -68,31 +68,51 @@ def load_data_from_tag(log_dir, tag):
 
 
 directories = [
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_10-49-36",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_10-52-59",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_10-55-54",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_10-58-12",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_11-00-16",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_11-02-17",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_11-04-17",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_11-06-19",
-"learning/GAIL/PPO_300_steps_validation_w_domain_augmentation_mass/logs/GAIL_CLOTH_TASK_26-06-08_11-08-14",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-37-22",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-40-15",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-44-33",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-48-43",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-52-53",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-57-16",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-01-44",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-06-00",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-10-19",
+]
+
+diffusion_policies = [
+    
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_10-52-10",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_10-56-24",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-00-38",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-05-26",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-10-00",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-14-37",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-18-42",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-23-00",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-27-04",
+
 ]
 
 
 
 
 
+add_diffusion_policy_results = True 
+
 
 name = "test_plot"
 
+diffusion_model = [load_data_from_tag(dirs, "environment/reward_env_end" ) for dirs in diffusion_policies]
 
 boxplot_values_env_end = [load_data_from_tag(dirs, "environment/reward_env_end" ) for dirs in directories]
 IRL_values_env_average_end = [load_data_from_tag(dirs, "environment/reward_IRL_avg" ) for dirs in directories]
 
+
+
 # --- NEW: Scaling and offset parameters for discriminator data ---
 scale_factor = 1  # Adjust this to scale the IRL rewards
 offset = -1.2        # Adjust this to offset the IRL rewards
+y_coef = 0.0
 
 
 y_max = 1.7
@@ -112,7 +132,7 @@ y_min_d = -1
 
 
 # Apply scaling and offset to IRL_values_env_average_end
-scaled_IRL_values = [[(val * scale_factor) + offset for val in vals] for vals in IRL_values_env_average_end]
+scaled_IRL_values = [[(val * scale_factor) + offset +  i * y_coef for val in vals] for i, vals in enumerate(IRL_values_env_average_end)]
 
 
 x_positions = np.arange(1, len(directories) + 1)  # x-axis positions for
@@ -136,6 +156,18 @@ for i in range(len(scaled_IRL_values)):
 
 
 
+# ----------------------------------
+
+# Apply scaling and offset to IRL_values_env_average_end
+diffusion_model = [vals for i, vals in enumerate(diffusion_model)]
+
+
+
+diffusion_means = [np.mean(vals) for vals in diffusion_model]
+diffusion_stds = [np.std(vals) for vals in diffusion_model]
+
+
+
 
 
 
@@ -153,8 +185,6 @@ colors = ['Orange', 'cornflowerblue', 'Orange', 'Orange', 'Orange', 'Orange', 'O
 
 # Create figure and primary axis
 fig, ax1 = plt.subplots(figsize=(10, 6))
-
-
 # Plot the Discriminator Reward line and fill on the secondary y-axis
 ax1.plot(x_positions, means, color='darkred', linestyle='--', linewidth=1.5)
 ax1.fill_between(
@@ -165,12 +195,27 @@ ax1.fill_between(
     alpha=0.20,
 )
 
+
+if add_diffusion_policy_results:
+    ax1.plot(x_positions, diffusion_means, color='black', linestyle='-', linewidth=1.5)
+    ax1.fill_between(
+        x_positions,
+        [-val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
+        [val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
+        color="gray",
+        alpha=0.50,
+    )
+
+
+
+
 bplot = ax1.boxplot(boxplot_values_env_end, patch_artist=True, widths=0.6,
             boxprops=dict(facecolor='none', color='blue', linewidth=1),
             medianprops=dict(color='red', linewidth=0.5),
             whiskerprops=dict(color='black', linewidth=1),
             capprops=dict(color='black', linewidth=1),
             flierprops=dict(marker='o', markersize=3, markerfacecolor='none', markeredgecolor='black'),)
+
 
 
 
@@ -204,9 +249,20 @@ for patch, color in zip(bplot['boxes'], colors):
 
 # Set labels for primary y-axis
 ax1.set_ylabel('Performance metric', fontsize=22)
-ax1.set_xlabel('Cloth node mass [Kg]', fontsize=22)
 ax1.set_xticks([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+# For mass
+ax1.set_xlabel('Cloth node mass [Kg]', fontsize=22)
 ax1.set_xticklabels(["0.005", "0.010", "0.030", "0.050", "0.075", "0.100", "0.125", "0.150", "0.175"])
+
+
+# # for cloth spacing
+# ax1.set_xlabel('Cloth node spacing [m]', fontsize=22)
+# ax1.set_xticklabels(["0.025", "0.030", "0.035", "0.040", "0.045", "0.050", "0.055", "0.060", "0.065"])
+
+
+
+
 ax1.tick_params(axis='y', labelsize=14)
 
 ax1.grid(axis='y', linestyle='--', alpha=0.7)
@@ -273,10 +329,11 @@ plt.yticks(fontsize=tick_font_size)
 # Add legend
 
 # plt.plot([], [], color='Mediumseagreen', label='Finetuned Environment', linewidth=5)
+plt.plot([], [], color='Black', label='Diffusion policy', linewidth=5)
 plt.plot([], [], color='Orange', label='Unseen Environment', linewidth=5)
 plt.plot([], [], color='cornflowerblue', label='Baseline Environment', linewidth=5)
 plt.plot([], [], color='firebrick', label='Discriminator Reward w. standard deviation', linewidth=5)
-plt.legend(fontsize=legend_font_size,loc='upper right',)  
+plt.legend(fontsize=legend_font_size,loc='lower right',)  
 
 # Show the plot
 plt.savefig("plots/"+ name + ".png")
