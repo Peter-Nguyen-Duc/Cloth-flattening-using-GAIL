@@ -68,28 +68,28 @@ def load_data_from_tag(log_dir, tag):
 
 
 directories = [
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-37-22",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-40-15",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-44-33",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-48-43",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-52-53",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_10-57-16",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-01-44",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-06-00",
-"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_15/logs/GAIL_CLOTH_TASK_26-06-14_11-10-19",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-35-28",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-37-38",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-40-26",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-45-40",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-50-45",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_10-55-30",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_11-00-08",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_11-04-35",
+"GAIL/Saved_models/validation_mass_finetuned_80_steps/0_05/logs/GAIL_CLOTH_TASK_26-06-14_11-09-03",
 ]
 
 diffusion_policies = [
     
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_10-52-10",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_10-56-24",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-00-38",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-05-26",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-10-00",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-14-37",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-18-42",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-23-00",
-"GAIL/Saved_models/diffusion_policies/339_training_steps/cloth_size/logs/GAIL_CLOTH_TASK_26-06-14_11-27-04",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_10-48-56",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_10-52-20",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_10-56-26",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-00-46",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-04-43",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-08-43",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-12-43",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-16-46",
+"GAIL/Saved_models/diffusion_policies/339_training_steps/mass/logs/GAIL_CLOTH_TASK_26-06-14_11-20-59",
 
 ]
 
@@ -176,7 +176,7 @@ diffusion_stds = [np.std(vals) for vals in diffusion_model]
 # unseen environment: Orange
 # Baseline environment: cornflowerblue
 
-colors = ['Orange', 'cornflowerblue', 'Orange', 'Orange', 'Orange', 'Orange', 'Orange', 'Orange', 'Orange']
+colors = ['Orange', 'cornflowerblue', 'Orange', 'Mediumseagreen', 'Orange', 'Mediumseagreen', 'Orange', 'Mediumseagreen', 'Orange']
 
 
 
@@ -196,15 +196,15 @@ ax1.fill_between(
 )
 
 
-if add_diffusion_policy_results:
-    ax1.plot(x_positions, diffusion_means, color='black', linestyle='-', linewidth=1.5)
-    ax1.fill_between(
-        x_positions,
-        [-val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
-        [val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
-        color="gray",
-        alpha=0.50,
-    )
+# if add_diffusion_policy_results:
+#     ax1.plot(x_positions, diffusion_means, color='black', linestyle='-', linewidth=1.5)
+#     ax1.fill_between(
+#         x_positions,
+#         [-val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
+#         [val + diffusion_means[i] for i, val in enumerate(diffusion_stds)],
+#         color="gray",
+#         alpha=0.50,
+#     )
 
 
 
@@ -229,7 +229,7 @@ for i, patch in enumerate(bplot['boxes']):
 
 
 for i in range(len(boxplot_values_env_end)):
-    if False: # Replace with the indices of the boxplots you want to adjust
+    if i==1: # Replace with the indices of the boxplots you want to adjust
         plt.setp(bplot['medians'][i], color='cornflowerblue', linewidth=3)  # Hide median line
     # elif i == 2 or i == 3 or i == 4 or i==6:
     #     plt.setp(bplot['medians'][i], color='Orange', linewidth=2)  # Keep median line for others
@@ -328,7 +328,7 @@ legend_font_size = 13
 plt.yticks(fontsize=tick_font_size)
 # Add legend
 
-# plt.plot([], [], color='Mediumseagreen', label='Finetuned Environment', linewidth=5)
+plt.plot([], [], color='Mediumseagreen', label='Finetuned Environment', linewidth=5)
 plt.plot([], [], color='Black', label='Diffusion policy', linewidth=5)
 plt.plot([], [], color='Orange', label='Unseen Environment', linewidth=5)
 plt.plot([], [], color='cornflowerblue', label='Baseline Environment', linewidth=5)
